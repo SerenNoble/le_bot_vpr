@@ -1,0 +1,3 @@
+[submodule "deps/vpr"]
+	path = deps/vpr
+	url = https://github.com/yeyupiaoling/VoiceprintRecognition-Pytorch.git

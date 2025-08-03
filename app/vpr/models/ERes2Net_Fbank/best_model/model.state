@@ -1,0 +1,11 @@
+{
+    "last_epoch": 59,
+    "version": "1.1.0",
+    "model_conf.model": "ERes2Net",
+    "feature_method": "Fbank",
+    "loss": "AAMLoss",
+    "threshold": 0.2001391500234604,
+    "eer": 0.08132920304139679,
+    "min_dcf": 0.4554442081333228,
+    "margin": 0.3
+}
