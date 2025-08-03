@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CopilotDiffPersistence">
+    <option name="pendingDiffs">
+      <map>
+        <entry key="$PROJECT_DIR$/app/main.py">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/app/main.py" />
+              <option name="originalContent" value="from deps.vpr.mvector.predict import MVectorPredictor&#10;from fastapi import FastAPI&#10;&#10;predictor = MVectorPredictor(configs='app/vpr/configs/eres2net.yml',&#10;                             model_path='app/vpr/models/ERes2Net_Fbank/',&#10;                             use_gpu=False)&#10;# 获取音频特征&#10;embedding = predictor.predict(audio_data='deps/vpr/dataset/a_1.wav')&#10;# 获取两个音频的相似度&#10;similarity = predictor.contrast(audio_data1='deps/vpr/dataset/a_1.wav', audio_data2='deps/vpr/dataset/a_2.wav')&#10;&#10;# 注册用户音频&#10;predictor.register(user_name='夜雨飘零', audio_data='deps/vpr/dataset/b_1.wav')&#10;# 识别用户音频&#10;name, score = predictor.recognition(audio_data='deps/vpr/dataset/b_2.wav')&#10;# 获取所有用户&#10;users_name = predictor.get_users()&#10;# 删除用户音频&#10;predictor.remove_user(user_name='夜雨飘零')&#10;app = FastAPI()&#10;&#10;&#10;@app.get(&quot;/&quot;)&#10;async def root():&#10;    return {&quot;message&quot;: &quot;Hello World&quot;}&#10;&#10;&#10;@app.get(&quot;/hello/{name}&quot;)&#10;async def say_hello(name: str):&#10;    return {&quot;message&quot;: f&quot;Hello {name}&quot;}&#10;" />
+              <option name="updatedContent" value="import sys&#10;import os&#10;&#10;# 添加 deps/vpr 目录到 Python 路径，以便能够导入 mvector 模块&#10;sys.path.append(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'deps', 'vpr'))&#10;&#10;from deps.vpr.mvector.predict import MVectorPredictor&#10;from fastapi import FastAPI&#10;&#10;predictor = MVectorPredictor(configs='app/vpr/configs/eres2net.yml',&#10;                             model_path='app/vpr/models/ERes2Net_Fbank/',&#10;                             use_gpu=False)&#10;# 获取音频特征&#10;embedding = predictor.predict(audio_data='deps/vpr/dataset/a_1.wav')&#10;# 获取两个音频的相似度&#10;similarity = predictor.contrast(audio_data1='deps/vpr/dataset/a_1.wav', audio_data2='deps/vpr/dataset/a_2.wav')&#10;&#10;# 注册用户音频&#10;predictor.register(user_name='夜雨飘零', audio_data='deps/vpr/dataset/b_1.wav')&#10;# 识别用户音频&#10;name, score = predictor.recognition(audio_data='deps/vpr/dataset/b_2.wav')&#10;# 获取所有用户&#10;users_name = predictor.get_users()&#10;# 删除用户音频&#10;predictor.remove_user(user_name='夜雨飘零')&#10;app = FastAPI()&#10;&#10;&#10;@app.get(&quot;/&quot;)&#10;async def root():&#10;    return {&quot;message&quot;: &quot;Hello World&quot;}&#10;&#10;&#10;@app.get(&quot;/hello/{name}&quot;)&#10;async def say_hello(name: str):&#10;    return {&quot;message&quot;: f&quot;Hello {name}&quot;}" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>

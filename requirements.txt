@@ -1,1 +1,4 @@
+black~=25.1.0
 fastapi~=0.116.1
+torch~=2.7.1
+torchaudio~=2.7.1
