@@ -19,11 +19,6 @@ async def root():
     return {"message": "Hello World"}
 
 
-@app.get("/user/{user_id}")
-async def say_hello(user_id: str):
-    return {"message": f"User: {user_id}", "users": predictor.get_users()}
-
-
 @app.post("/user/{user_id}")
 async def register_user_audio(user_id: str, audio_data: AudioData):
     """
@@ -58,7 +53,7 @@ async def register_user_audio(user_id: str, audio_data: AudioData):
     except Exception as e:
         return {"error": f"Failed to process audio: {str(e)}"}
 
-@app.get("/identify")
+@app.post("/recognize")
 async def identify_user(audio_data: AudioData):
     """
     上传base64编码的音频数据，识别用户
@@ -76,13 +71,12 @@ async def identify_user(audio_data: AudioData):
         embedding = predictor.predict(audio_data=audio_bytes)
         print(f"音频特征信息: {embedding}")
 
-        # 使用predictor.identify识别用户，直接传递字节数据
-        user_id, score = predictor.identify(audio_data=audio_bytes)
+        # 使用predictor.recognition，直接传递字节数据
+        user_id = predictor.recognition(audio_data=audio_bytes)
 
         return {
             "message": f"User identified successfully",
             "identified_user": user_id,
-            "score": score,
             "audio_features_shape": embedding.shape if hasattr(embedding, 'shape') else str(type(embedding)),
             "format": audio_data.format,
             "codec": audio_data.codec
