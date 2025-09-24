@@ -9,9 +9,8 @@ app = FastAPI()
 
 
 class AudioData(BaseModel):
-    format: str
-    codec: str
     data: str
+    sample_rate: int = 16000
 
 
 @app.get("/")
@@ -19,15 +18,12 @@ async def root():
     return {"message": "Hello World"}
 
 
-@app.post("/user/{user_id}")
-async def register_user_audio(user_id: str, audio_data: AudioData):
+# /api/v1/vpr/register?user_id=xxx
+@app.post("/register")
+async def register_user_audio(audio_data: AudioData, user_id: str):
     """
     上传base64编码的音频数据，获取音频特征并注册用户
-    JSON格式: {"format": "wav", "codec": "pcm", "data": "base64 binary string"}
     """
-    # 检查音频格式
-    if audio_data.format.lower() != "wav":
-        return {"error": "Only WAV format is supported"}
 
     try:
         # 解码base64音频数据为字节
