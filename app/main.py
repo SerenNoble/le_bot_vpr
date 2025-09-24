@@ -13,13 +13,7 @@ class AudioData(BaseModel):
     sample_rate: int = 16000
 
 
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
-
-
-# /api/v1/vpr/register?user_id=xxx
-@app.post("/register")
+@app.post("/api/v1/vpr/register")
 async def register_user_audio(audio_data: AudioData, user_id: str):
     """
     上传base64编码的音频数据，获取音频特征并注册用户
@@ -49,7 +43,7 @@ async def register_user_audio(audio_data: AudioData, user_id: str):
     except Exception as e:
         return {"error": f"Failed to process audio: {str(e)}"}
 
-@app.post("/recognize")
+@app.post("/api/v1/vpr/recognize")
 async def identify_user(audio_data: AudioData):
     """
     上传base64编码的音频数据，识别用户
