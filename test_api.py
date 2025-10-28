@@ -47,6 +47,58 @@ def create_test_audio_file(filename="test_audio.wav", duration=3):
         print("   pip install numpy")
         return None
 
+def create_market_test_audio(filename="market_test_500ms.wav", duration=0.5):
+    """创建市场测试用的500ms音频文件"""
+    try:
+        import numpy as np
+        import wave
+
+        # 音频参数
+        sample_rate = 16000
+
+        # 生成500ms的音频数据
+        num_samples = int(sample_rate * duration)
+        t = np.linspace(0, duration, num_samples, False)
+
+        # 模拟人声频率范围的复合信号 (100-4000 Hz)
+        frequencies = [200, 400, 800, 1600]  # 人声主要频率成分
+        audio_data = np.zeros(num_samples)
+
+        for freq in frequencies:
+            # 每个频率成分随机权重
+            weight = np.random.uniform(0.1, 0.3)
+            audio_data += weight * np.sin(2 * np.pi * freq * t)
+
+        # 添加语音特有的包络（渐入渐出）
+        envelope = np.ones(num_samples)
+        fade_samples = int(0.05 * sample_rate)  # 50ms淡入淡出
+        envelope[:fade_samples] = np.linspace(0, 1, fade_samples)
+        envelope[-fade_samples:] = np.linspace(1, 0, fade_samples)
+        audio_data *= envelope
+
+        # 添加轻微噪音模拟真实环境
+        noise_level = 0.02
+        audio_data += noise_level * np.random.randn(num_samples)
+
+        # 归一化并转换为16位整数
+        audio_data = audio_data / np.max(np.abs(audio_data)) * 0.8  # 80%音量避免削波
+        audio_data = (audio_data * 32767).astype(np.int16)
+
+        # 保存为WAV文件
+        with wave.open(filename, 'w') as wav_file:
+            wav_file.setnchannels(1)  # 单声道
+            wav_file.setsampwidth(2)  # 16位
+            wav_file.setframerate(sample_rate)
+            wav_file.writeframes(audio_data.tobytes())
+
+        print(f"✅ 创建市场测试音频文件: {filename} (时长: {duration*1000:.0f}ms)")
+        return filename
+
+    except ImportError:
+        print("⚠️  需要安装numpy库来创建测试音频文件")
+        print("   pip install numpy")
+        return None
+
 def audio_to_base64(audio_file):
     """将音频文件转换为base64"""
     try:
@@ -288,13 +340,20 @@ def main():
     print("\n🎵 创建测试音频文件...")
     audio_file1 = create_test_audio_file("test_audio_1.wav", duration=3)
     audio_file2 = create_test_audio_file("test_audio_2.wav", duration=4)
+    market_audio = create_market_test_audio("market_test_500ms.wav", duration=0.3)
 
-    if not audio_file1 or not audio_file2:
+    if not audio_file1 or not audio_file2 or not market_audio:
         print("\n❌ 无法创建测试音频文件，测试终止")
         return
     test_get_users()
     test_register_user_base64("测试用户1", audio_file1)
     test_recognize_user_file(audio_file1)
+
+    # 测试市场500ms音频文件
+    print(f"\n🎯 测试市场500ms音频文件:")
+    test_register_user_base64("市场测试用户", market_audio)
+    test_recognize_user_file(market_audio)
+
     exit()
     # 测试用例
     test_cases = [
@@ -338,7 +397,7 @@ def main():
 
     # 清理测试文件
     print(f"\n🧹 清理测试文件...")
-    for file in [audio_file1, audio_file2]:
+    for file in [audio_file1, audio_file2, market_audio]:
         if file and os.path.exists(file):
             os.remove(file)
             print(f"   删除: {file}")
