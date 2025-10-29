@@ -191,7 +191,7 @@ async def identify_user_file(file: UploadFile = File(...), threshold: Optional[f
         audio_bytes = await file.read()
 
         # 获取音频特征
-        embedding = predictor.predict(audio_data=audio_bytes)
+        # embedding = predictor.predict(audio_data=audio_bytes)
 
         # 识别用户
         result = predictor.recognition(audio_data=audio_bytes, threshold=threshold)
@@ -202,7 +202,7 @@ async def identify_user_file(file: UploadFile = File(...), threshold: Optional[f
                 message=f"成功识别用户: {result[0]}",
                 identified_user=result[0],
                 confidence=result[1],
-                feature_shape=str(embedding.shape) if hasattr(embedding, 'shape') else str(type(embedding))
+                feature_shape='1'#str(embedding.shape) if hasattr(embedding, 'shape') else str(type(embedding))
             )
         else:
             return RecognitionResponse(
@@ -210,7 +210,7 @@ async def identify_user_file(file: UploadFile = File(...), threshold: Optional[f
                 message="未能识别出匹配的用户",
                 identified_user=None,
                 confidence=None,
-                feature_shape=str(embedding.shape) if hasattr(embedding, 'shape') else str(type(embedding))
+                feature_shape='1'#str(embedding.shape) if hasattr(embedding, 'shape') else str(type(embedding))
             )
 
     except Exception as e:
