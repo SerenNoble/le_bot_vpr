@@ -354,67 +354,6 @@ def main():
     test_register_user_base64("市场测试用户", market_audio)
     test_recognize_user_file(market_audio)
 
-    exit()
-    # 测试用例
-    test_cases = [
-        # 1. 获取初始用户列表
-        ("获取用户列表", lambda: test_get_users()),
-
-        # 2. 注册用户 - Base64方式
-        ("注册用户-Base64", lambda: test_register_user_base64("测试用户1", audio_file1)),
-
-        # 3. 注册用户 - 文件上传方式
-        ("注册用户-文件上传", lambda: test_register_user_file("测试用户2", audio_file2)),
-
-        # 4. 获取更新后的用户列表
-        ("获取用户列表", lambda: test_get_users()),
-
-        # 5. 识别用户 - Base64方式
-        ("识别用户-Base64", lambda: test_recognize_user_base64(audio_file1)),
-
-        # 6. 识别用户 - 文件上传方式
-        ("识别用户-文件上传", lambda: test_recognize_user_file(audio_file2)),
-
-        # 8. 删除用户
-        ("删除用户1", lambda: test_delete_user("测试用户1")),
-        ("删除用户2", lambda: test_delete_user("测试用户2")),
-
-        # 9. 获取最终用户列表
-        ("获取用户列表", lambda: test_get_users()),
-    ]
-
-    # 执行测试
-    passed = 0
-    total = len(test_cases)
-
-    for test_name, test_func in test_cases:
-        try:
-            if test_func():
-                passed += 1
-            time.sleep(0.5)  # 避免请求过快
-        except Exception as e:
-            print(f"❌ 测试 '{test_name}' 异常: {e}")
-
-    # 清理测试文件
-    print(f"\n🧹 清理测试文件...")
-    for file in [audio_file1, audio_file2, market_audio]:
-        if file and os.path.exists(file):
-            os.remove(file)
-            print(f"   删除: {file}")
-
-    # 测试结果
-    print("\n" + "=" * 50)
-    print(f"📊 测试完成: {passed}/{total} 通过")
-
-    if passed == total:
-        print("🎉 所有测试通过！API服务运行正常")
-    else:
-        print("⚠️  部分测试失败，请检查API服务")
-
-    print("\n💡 提示:")
-    print("   - 如需查看详细API文档，访问: http://localhost:8000/docs")
-    print("   - 如需调整识别阈值，修改请求中的threshold参数")
-    print("   - 建议使用真实语音文件进行测试以获得更好效果")
 
 if __name__ == "__main__":
     main()

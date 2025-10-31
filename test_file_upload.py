@@ -89,7 +89,7 @@ def test_file_upload():
 
     except requests.exceptions.ConnectionError:
         print("❌ 无法连接到服务器，请确保服务器已启动")
-        print("   运行: python start_api.py")
+        print("   运行: python run_server.py")
         return False
     except Exception as e:
         print(f"❌ 测试异常: {e}")
@@ -103,7 +103,7 @@ def test_file_upload():
 def main():
     """主函数"""
     print("语音识别API - 文件上传功能测试")
-    print("确保服务器已启动: python start_api.py")
+    print("确保服务器已启动: python run_server.py")
     print()
 
     success = test_file_upload()
