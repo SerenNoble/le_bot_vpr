@@ -3,18 +3,16 @@
 语音识别API测试脚本
 测试所有API接口的功能
 """
-import requests
 import base64
-import json
-import time
 import os
 import time
-from pathlib import Path
+
+import requests
 
 # API基础URL
 BASE_URL = "http://localhost:8000"
 
-def create_test_audio_file(filename="test_audio.wav", duration=3):
+def create_test_audio_file(filename="test_audio.wav", duration=3.0):
     """创建测试用的音频文件"""
     try:
         import numpy as np
@@ -66,7 +64,7 @@ def create_market_test_audio(filename="market_test_500ms.wav", duration=0.5):
 
         for freq in frequencies:
             # 每个频率成分随机权重
-            weight = np.random.uniform(0.1, 0.3)
+            weight = np.random.uniform(0.1, 0.4)
             audio_data += weight * np.sin(2 * np.pi * freq * t)
 
         # 添加语音特有的包络（渐入渐出）
@@ -338,9 +336,9 @@ def main():
 
     # 创建测试音频文件
     print("\n🎵 创建测试音频文件...")
-    audio_file1 = create_test_audio_file("test_audio_1.wav", duration=3)
-    audio_file2 = create_test_audio_file("test_audio_2.wav", duration=4)
-    market_audio = create_market_test_audio("market_test_500ms.wav", duration=0.3)
+    audio_file1 = create_test_audio_file("test_audio_1.wav", duration=0.4)
+    audio_file2 = create_test_audio_file("test_audio_2.wav", duration=0.4)
+    market_audio = create_market_test_audio("market_test_500ms.wav", duration=0.4)
 
     if not audio_file1 or not audio_file2 or not market_audio:
         print("\n❌ 无法创建测试音频文件，测试终止")

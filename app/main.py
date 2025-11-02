@@ -54,6 +54,26 @@ class CompareResponse(BaseModel):
     is_same_person: bool
 
 
+async def load_file_bytes(file: UploadFile) -> bytes:
+    # 检查文件格式 - 更宽松的检查
+    if file.content_type and not file.content_type.startswith('audio/'):
+        # 如果明确指定了非audio类型才拒绝
+        if file.content_type not in ['application/octet-stream', 'application/x-download']:
+            raise HTTPException(status_code=400, detail="只支持音频文件")
+
+    # 检查文件扩展名
+    if not file.filename:
+        raise HTTPException(status_code=400, detail="文件名不能为空")
+
+    allowed_extensions = ['.wav', '.mp3', '.flac', '.m4a', '.ogg', '.aac']
+    file_ext = os.path.splitext(file.filename)[1].lower()
+    if file_ext not in allowed_extensions:
+        raise HTTPException(status_code=400, detail=f"不支持的文件格式: {file_ext}，支持的格式: {', '.join(allowed_extensions)}")
+
+    # 读取音频数据
+    return await file.read()
+
+
 @app.post("/api/v1/vpr/register", response_model=RegisterResponse)
 async def register_user_audio(audio_data: AudioData, user_id: str):
     """
@@ -91,23 +111,7 @@ async def register_user_audio_file(file: UploadFile = File(...), user_id: str = 
     通过上传文件注册用户音频特征
     """
     try:
-        # 检查文件格式 - 更宽松的检查
-        if file.content_type and not file.content_type.startswith('audio/'):
-            # 如果明确指定了非audio类型才拒绝
-            if file.content_type not in ['application/octet-stream', 'application/x-download']:
-                raise HTTPException(status_code=400, detail="只支持音频文件")
-
-        # 检查文件扩展名
-        if not file.filename:
-            raise HTTPException(status_code=400, detail="文件名不能为空")
-
-        allowed_extensions = ['.wav', '.mp3', '.flac', '.m4a', '.ogg', '.aac']
-        file_ext = os.path.splitext(file.filename)[1].lower()
-        if file_ext not in allowed_extensions:
-            raise HTTPException(status_code=400, detail=f"不支持的文件格式: {file_ext}，支持的格式: {', '.join(allowed_extensions)}")
-
-        # 读取音频数据
-        audio_bytes = await file.read()
+        audio_bytes = await load_file_bytes(file)
 
         # 获取音频特征
         embedding = predictor.predict(audio_data=audio_bytes)
@@ -172,23 +176,7 @@ async def identify_user_file(file: UploadFile = File(...), threshold: Optional[f
     通过上传文件识别用户
     """
     try:
-        # 检查文件格式 - 更宽松的检查
-        if file.content_type and not file.content_type.startswith('audio/'):
-            # 如果明确指定了非audio类型才拒绝
-            if file.content_type not in ['application/octet-stream', 'application/x-download']:
-                raise HTTPException(status_code=400, detail="只支持音频文件")
-
-        # 检查文件扩展名
-        if not file.filename:
-            raise HTTPException(status_code=400, detail="文件名不能为空")
-
-        allowed_extensions = ['.wav', '.mp3', '.flac', '.m4a', '.ogg', '.aac']
-        file_ext = os.path.splitext(file.filename)[1].lower()
-        if file_ext not in allowed_extensions:
-            raise HTTPException(status_code=400, detail=f"不支持的文件格式: {file_ext}，支持的格式: {', '.join(allowed_extensions)}")
-
-        # 读取音频数据
-        audio_bytes = await file.read()
+        audio_bytes = await load_file_bytes(file)
 
         # 获取音频特征
         # embedding = predictor.predict(audio_data=audio_bytes)
